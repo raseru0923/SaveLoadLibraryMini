@@ -74,7 +74,6 @@ namespace JBSaveLoadLib
                         if (text == "" || text == null)
                         {
                             data = default;
-                            Debug.LogError("データが存在しません");
                             return false;
                         }
                         var byteContent = "bytes";
@@ -86,7 +85,6 @@ namespace JBSaveLoadLib
             catch
             {
                 data = default;
-                Debug.LogError("エラーが発生しました");
                 return false;
             }
             return true;
