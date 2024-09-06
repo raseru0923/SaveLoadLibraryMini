@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using UnityEngine;
+using System.Diagnostics;
 
 namespace JBSaveLoadLib
 {
@@ -14,12 +15,11 @@ namespace JBSaveLoadLib
         /// 必要領域を確保
         /// </summary>
         /// <param name="path"></param>
-        private static void Partitioning(string path)
+        private static FileStream Partitioning(string path)
         {
             string tempPath = Path.GetDirectoryName(path);
             if (!Directory.Exists(tempPath)) { Directory.CreateDirectory(tempPath); }
-            tempPath = Path.GetFileName(path);
-            if (!File.Exists(tempPath)) { using (var file = File.Create(tempPath)) { } }
+            return File.Create(path);
         }
 
         // パブリック関数
@@ -31,13 +31,10 @@ namespace JBSaveLoadLib
         /// <param name="filePath"></param>
         public static void Save<T>(T data, string filePath)
         {
-            // 必要領域確保
-            Partitioning(filePath);
-
             // json形式にシリアライズ
             string serializeData = JsonUtility.ToJson(data);
 
-            using (var stream = File.OpenWrite(filePath))
+            using (var stream = Partitioning(filePath))
             {
                 stream.SetLength(0);    // ファイルリセット
                 using (BinaryWriter writer = new BinaryWriter(stream))
